@@ -276,7 +276,7 @@ class mod_hsuforum_renderer extends plugin_renderer_base {
         $output = '<div class="hsuforum-new-discussion-target"></div>';
         foreach ($discussions as $discussionpost) {
             list($discussion, $post) = $discussionpost;
-            $output .= $this->discussion($cm, $discussion, $post, false);
+            $output .= $this->discussion($cm, $discussion, $post, false, array(), null, true);
         }
 
 
@@ -320,9 +320,10 @@ class mod_hsuforum_renderer extends plugin_renderer_base {
      * @param \stdClass $post The discussion's post to render
      * @param \stdClass[] $posts The discussion posts (optional)
      * @param null|boolean $canreply If the user can reply or not (optional)
+     * @param null|boolean $hidethreadcontent for main view(optional)
      * @return string
      */
-    public function discussion($cm, $discussion, $post, $fullthread, array $posts = array(), $canreply = null) {
+    public function discussion($cm, $discussion, $post, $fullthread, array $posts = array(), $canreply = null, $hidethreadcontent = null) {
         global $DB, $PAGE, $USER;
 
         $forum = hsuforum_get_cm_forum($cm);
@@ -437,7 +438,7 @@ class mod_hsuforum_renderer extends plugin_renderer_base {
             $data->timed = '';
         }
 
-        return $this->discussion_template($data, $forum->type);
+        return $this->discussion_template($data, $forum->type, $hidethreadcontent);
     }
 
     public function article_assets($cm) {
@@ -551,7 +552,7 @@ class mod_hsuforum_renderer extends plugin_renderer_base {
         return $this->post_template($data);
     }
 
-    public function discussion_template($d, $forumtype) {
+    public function discussion_template($d, $forumtype, $hidethreadcontent = null) {
         global $PAGE;
 
         $replies = '';
@@ -624,6 +625,11 @@ class mod_hsuforum_renderer extends plugin_renderer_base {
             $revealed = '<span class="label label-danger">'.$nonanonymous.'</span>';
         }
 
+        $threadcontent = '';
+        if (!$hidethreadcontent) {
+            $threadcontent = '<div class="hsuforum-thread-content" tabindex="0">' . $d->message . '</div>';
+        }
+
 
         $threadheader = <<<HTML
         <div class="hsuforum-thread-header">
@@ -649,10 +655,7 @@ HTML;
         </div>
 
         $threadheader
-
-        <div class="hsuforum-thread-content" tabindex="0">
-            $d->message
-        </div>
+        $threadcontent
         $tools
     </header>
 

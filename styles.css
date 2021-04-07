@@ -40,7 +40,6 @@
 /* Hide things in the main view */
 .hsuforum-thread .hsuforum-footer-reply,
 .hsuforum-thread .hsuforum-thread-body,
-.hsuforum-thread .hsuforum-thread-content,
 .hsuforum-thread .hsuforum-replycount-link,
 .hsuforum-reply-wrapper + header {
     display: none;
