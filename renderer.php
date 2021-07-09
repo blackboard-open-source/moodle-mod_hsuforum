@@ -1260,7 +1260,13 @@ HTML;
         if (!empty($search)) {
             $postcontent = highlight($search, $postcontent);
         }
-
+        if (!empty($CFG->enableplagiarism)) {
+            require_once($CFG->libdir.'/plagiarismlib.php');
+            $postcontent .= plagiarism_get_links(array('userid' => $post->userid,
+                'content' => $post->message,
+                'cmid' => $cm->id,
+                'course' => $cm->course));
+        }
         if (!empty($attachments)) {
             $postcontent .= "<div class='attachments'>".$attachments."</div>";
         }
